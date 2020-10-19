@@ -1,6 +1,7 @@
 class SpringNode {
   PVector pos, vel, acc;
   float mass;
+  color col;
   
   SpringNode (PVector pos, float mass) {
     this.pos = pos;
@@ -8,6 +9,12 @@ class SpringNode {
     
     vel = new PVector(0, 0, 0);
     acc = new PVector(0, 0, 0);
+    
+    col = color(255);
+  }
+  
+  void ApplyForce(PVector force) {
+    acc.add(force);
   }
   
   void Update(float dt) {
@@ -16,12 +23,12 @@ class SpringNode {
     acc = new PVector(0, 0, 0);
   }
   
-  void ApplyForce(PVector force) {
-    acc.add(force.div(mass));
-  }
-  
   void Display() {
+    fill(col);
+    
+    pushMatrix();
     translate(pos.x, pos.y, pos.z);
     rect(0, 0, 10, 10);
+    popMatrix();
   }
 }

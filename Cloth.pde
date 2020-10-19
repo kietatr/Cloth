@@ -1,21 +1,23 @@
-int numHorizontalNodes = 4;
-int numVerticalNodes = 3;
+int numHorizontalNodes = 10;
+int numVerticalNodes = 10;
 
 // Spring constant
-float ks = 20;
+float ks = 0.5;
 
 // Damp constant
-float kd = 10;
+float kd = 0.3;
 
-PVector gravity = new PVector(0, 200, 0);
+float mass = 20;
+
+PVector gravity = new PVector(0, 6, 0);
 
 // Rest length
-float l0 = 3;
+float l0 = 30;
 
 SpringNode[][] springNodes = new SpringNode[numHorizontalNodes][numVerticalNodes];
 
 void setup() {
-  size(600, 600, P3D);
+  size(500, 500, P3D);
   surface.setTitle("Cloth");
   rectMode(CENTER);
   
@@ -24,24 +26,15 @@ void setup() {
 
 void draw() {
   background(0);
-  //SimulateCloth();
   
-  for (int i = 0; i < numHorizontalNodes; i++) {
-    for (int j = 0; j < numVerticalNodes; j++) {
-      springNodes[i][j].Update(0.1);
-      springNodes[i][j].Display();
-      
-      println(springNodes[i][j].pos);
-    }
-  }
+  SimulateCloth();
 }
 
 void InitCloth() {
   for (int i = 0; i < numHorizontalNodes; i++) {
     for (int j = 0; j < numVerticalNodes; j++) {
-      PVector nodePos = new PVector(50 + 10*i, 50 + 10*j, 0);
-      float nodeMass = 1.0;
-      springNodes[i][j] = new SpringNode(nodePos, nodeMass);
+      PVector nodePos = new PVector(150 + l0 * i, 120 + l0 * j, 0);
+      springNodes[i][j] = new SpringNode(nodePos, mass);
     }
   }
 }
@@ -59,12 +52,20 @@ void SimulateCloth() {
       // Apply gravity
       springNodes[i][j].ApplyForce(gravity);
       
-      // But no gravity to the top row
-      springNodes[0][j].vel = new PVector(0, 0, 0);
+      // No gravity for first row
+      if (j == 0) {
+        springNodes[i][j].vel = new PVector(0, 0, 0);
+        springNodes[i][j].col = color(255, 0, 0);
+        println("index:", i, j, "; pos =", springNodes[i][j].pos);
+      }
       
       // Update position and display
       springNodes[i][j].Update(0.1);
       springNodes[i][j].Display();
+      
+      //println("index:", i, j, "; pos =", springNodes[i][j].pos);
+      //println("index:", i, j, "; vel =", springNodes[i][j].vel);
+      //println("index:", i, j, "; acc =", springNodes[i][j].acc);
     }
   }
 }
@@ -74,13 +75,19 @@ void ApplySpringForce(int i, int j, int otherI, int otherJ) {
     SpringNode thisNode = springNodes[i][j];
     SpringNode otherNode = springNodes[otherI][otherJ];
     
-    PVector e = otherNode.pos.sub(thisNode.pos);
+    PVector e = PVector.sub(otherNode.pos, thisNode.pos);
     float l = e.mag();
     e.normalize();
     float v1 = e.dot(thisNode.vel);
     float v2 = e.dot(otherNode.vel);
-    PVector springF = e.mult(-ks * (l0 - l) - kd * (v1 - v2));
-    thisNode.ApplyForce(springF);
-    otherNode.ApplyForce(springF.mult(-1));
+    float springF = (-ks * (l0 - l)) + (-kd * (v1 - v2));
+    thisNode.ApplyForce(PVector.mult(e, springF));
+    otherNode.ApplyForce(PVector.mult(e, -springF));
+
+    println("index:", i, j, "; otherNode.vel =", otherNode.vel);
+    
+    // Draw spring line
+    stroke(255);
+    line(thisNode.pos.x, thisNode.pos.y, otherNode.pos.x, otherNode.pos.y);
   }
 }
