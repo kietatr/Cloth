@@ -11,8 +11,8 @@
 ## Camera Control
 
 Using the PeasyCam's controls:
-- Mouse Left-Drag will rotate the camera around the subject
-- Mouse Right-Drag will zoom in and out
-- Mouse Middle-Drag (Cmd + Left-Drag on Mac) will pan
-- Double-click restores the camera to its original position
-- Shift key constrains rotation and panning to one axis or the other
+- **Mouse Left-Drag** will rotate the camera around the subject
+- **Mouse Right-Drag** will zoom in and out
+- **Mouse Middle-Drag** (Cmd + Left-Drag on Mac) will pan
+- **Double Click** restores the camera to its original position
+- **Shift** key constrains rotation and panning to one axis or the other
