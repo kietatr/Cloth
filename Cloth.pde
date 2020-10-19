@@ -1,13 +1,13 @@
 int numHorizontalNodes = 7;
 int numVerticalNodes = 5;
 
-float dt = 0.3;
+float dt = 10/frameRate;
 
 // Spring constant
-float ks = 40;
+float ks = 70;
 
 // Damp constant
-float kd = 20;
+float kd = 30;
 
 float mass = 30;
 
@@ -19,7 +19,7 @@ float l0 = 40;
 SpringNode[][] springNodes = new SpringNode[numHorizontalNodes][numVerticalNodes];
 
 void setup() {
-  size(500, 500, P3D);
+  size(500, 600, P3D);
   surface.setTitle("Cloth");
   rectMode(CENTER);
   
@@ -35,7 +35,10 @@ void draw() {
 void InitCloth() {
   for (int i = 0; i < numHorizontalNodes; i++) {
     for (int j = 0; j < numVerticalNodes; j++) {
-      PVector nodePos = new PVector(150 + l0*i, 120 + l0*j + random(-10, 10), j*50 + random(-30, 100));
+      float posX = 120 + l0*i + random(-10, 10);
+      float posY = 120 + l0*j + random(-10, 10);
+      float posZ = j*50 + random(-30, 100);
+      PVector nodePos = new PVector(posX, posY, posZ);
       springNodes[i][j] = new SpringNode(nodePos, mass);
     }
   }
@@ -55,7 +58,7 @@ void SimulateCloth() {
       springNodes[i][j].ApplyForce(gravity);
       
       // No gravity for first row
-      if (j == 0) {
+      if ((i == 0 && j == 0) || (i == numHorizontalNodes-1 && j == 0)) {
         springNodes[i][j].vel = new PVector(0, 0, 0);
         springNodes[i][j].acc = new PVector(0, 0, 0);
         springNodes[i][j].col = color(255, 0, 0);
