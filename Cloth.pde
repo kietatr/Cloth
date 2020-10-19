@@ -1,18 +1,20 @@
-int numHorizontalNodes = 10;
-int numVerticalNodes = 10;
+int numHorizontalNodes = 7;
+int numVerticalNodes = 5;
+
+float dt = 0.3;
 
 // Spring constant
-float ks = 0.5;
+float ks = 40;
 
 // Damp constant
-float kd = 0.3;
+float kd = 20;
 
-float mass = 20;
+float mass = 30;
 
-PVector gravity = new PVector(0, 6, 0);
+PVector gravity = new PVector(0, 20, 0);
 
 // Rest length
-float l0 = 30;
+float l0 = 40;
 
 SpringNode[][] springNodes = new SpringNode[numHorizontalNodes][numVerticalNodes];
 
@@ -33,7 +35,7 @@ void draw() {
 void InitCloth() {
   for (int i = 0; i < numHorizontalNodes; i++) {
     for (int j = 0; j < numVerticalNodes; j++) {
-      PVector nodePos = new PVector(150 + l0 * i, 120 + l0 * j, 0);
+      PVector nodePos = new PVector(150 + l0*i, 120 + l0*j + random(-10, 10), 0);
       springNodes[i][j] = new SpringNode(nodePos, mass);
     }
   }
@@ -55,12 +57,12 @@ void SimulateCloth() {
       // No gravity for first row
       if (j == 0) {
         springNodes[i][j].vel = new PVector(0, 0, 0);
+        springNodes[i][j].acc = new PVector(0, 0, 0);
         springNodes[i][j].col = color(255, 0, 0);
-        println("index:", i, j, "; pos =", springNodes[i][j].pos);
       }
       
       // Update position and display
-      springNodes[i][j].Update(0.1);
+      springNodes[i][j].Update(dt);
       springNodes[i][j].Display();
       
       //println("index:", i, j, "; pos =", springNodes[i][j].pos);
@@ -81,10 +83,12 @@ void ApplySpringForce(int i, int j, int otherI, int otherJ) {
     float v1 = e.dot(thisNode.vel);
     float v2 = e.dot(otherNode.vel);
     float springF = (-ks * (l0 - l)) + (-kd * (v1 - v2));
-    thisNode.ApplyForce(PVector.mult(e, springF));
-    otherNode.ApplyForce(PVector.mult(e, -springF));
+    thisNode.ApplyForce(PVector.mult(e, springF/thisNode.mass));
+    otherNode.ApplyForce(PVector.mult(e, -springF/thisNode.mass));
 
-    println("index:", i, j, "; otherNode.vel =", otherNode.vel);
+    //println("index:", i, j, "; thisNode.vel =", thisNode.vel);
+    //println("index:", i, j, "; thisNode.acc =", thisNode.acc);
+    //println("index:", i, j, "; otherNode.vel =", otherNode.vel);
     
     // Draw spring line
     stroke(255);
