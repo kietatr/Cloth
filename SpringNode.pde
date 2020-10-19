@@ -28,7 +28,7 @@ class SpringNode {
     
     pushMatrix();
     translate(pos.x, pos.y, pos.z);
-    rect(0, 0, 10, 10);
+    box(10);
     popMatrix();
   }
 }

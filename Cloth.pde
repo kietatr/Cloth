@@ -1,7 +1,10 @@
+import peasy.*;
+PeasyCam cam;
+
 int numHorizontalNodes = 7;
 int numVerticalNodes = 5;
 
-float dt = 10/frameRate;
+float dt = 15/frameRate;
 
 // Spring constant
 float ks = 70;
@@ -20,7 +23,9 @@ SpringNode[][] springNodes = new SpringNode[numHorizontalNodes][numVerticalNodes
 
 void setup() {
   size(500, 600, P3D);
-  surface.setTitle("Cloth");
+  cam = new PeasyCam(this, 110, 190, 100, 300);
+  cam.setMinimumDistance(50);
+  
   rectMode(CENTER);
   
   InitCloth();
@@ -35,9 +40,9 @@ void draw() {
 void InitCloth() {
   for (int i = 0; i < numHorizontalNodes; i++) {
     for (int j = 0; j < numVerticalNodes; j++) {
-      float posX = 120 + l0*i + random(-10, 10);
-      float posY = 120 + l0*j + random(-10, 10);
-      float posZ = j*50 + random(-30, 100);
+      float posX = l0*i + random(-10, 10);
+      float posY = l0*j + random(-10, 10);
+      float posZ = -j*50;
       PVector nodePos = new PVector(posX, posY, posZ);
       springNodes[i][j] = new SpringNode(nodePos, mass);
     }
