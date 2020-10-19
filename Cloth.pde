@@ -35,7 +35,7 @@ void draw() {
 void InitCloth() {
   for (int i = 0; i < numHorizontalNodes; i++) {
     for (int j = 0; j < numVerticalNodes; j++) {
-      PVector nodePos = new PVector(150 + l0*i, 120 + l0*j + random(-10, 10), 0);
+      PVector nodePos = new PVector(150 + l0*i, 120 + l0*j + random(-10, 10), j*50 + random(-30, 100));
       springNodes[i][j] = new SpringNode(nodePos, mass);
     }
   }
@@ -92,6 +92,6 @@ void ApplySpringForce(int i, int j, int otherI, int otherJ) {
     
     // Draw spring line
     stroke(255);
-    line(thisNode.pos.x, thisNode.pos.y, otherNode.pos.x, otherNode.pos.y);
+    line(thisNode.pos.x, thisNode.pos.y, thisNode.pos.z, otherNode.pos.x, otherNode.pos.y, otherNode.pos.z);
   }
 }
